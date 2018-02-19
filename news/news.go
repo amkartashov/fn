@@ -4,8 +4,8 @@
 package news
 
 type Article struct {
-	Title   string
-	Link string
+	Title string
+	Link  string
 }
 
 type ArticleRepo interface {
