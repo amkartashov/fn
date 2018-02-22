@@ -20,12 +20,18 @@ func NewSqliteArticleRepo(FilePath string) (sqliteArticleRepo, error) {
 		return repo, err
 	}
 	repo.DB = db
-	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS article (id INTEGER PRIMARY KEY, title TEXT, link TEXT)")
+	statement, err := db.Prepare(`
+    CREATE TABLE IF NOT EXISTS article (
+      id INTEGER PRIMARY KEY,
+      title TEXT,
+      link TEXT,
+      UNIQUE (title, link)
+    )`)
 	if err != nil {
 		return repo, err
 	}
 	statement.Exec()
-	repo.saveStmt, err = db.Prepare("INSERT INTO article(title, link) VALUES (?, ?)")
+	repo.saveStmt, err = db.Prepare("INSERT OR IGNORE INTO article(title, link) VALUES (?, ?)")
 	if err != nil {
 		return repo, err
 	}
