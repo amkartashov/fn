@@ -3,6 +3,11 @@
 
 package news
 
+import (
+	"sync"
+	"time"
+)
+
 type Article struct {
 	Title string
 	Link  string
@@ -29,4 +34,49 @@ func CollectArticles(repo ArticleRepo, sources []NewsSource) {
 			repo.StoreArticle(a)
 		}
 	}
+}
+
+type newsService struct {
+	repo    ArticleRepo
+	sources []NewsSource
+	sMu     sync.RWMutex
+	stopC   chan struct{}
+}
+
+func (srv *newsService) Collect() {
+	srv.sMu.RLock()
+	defer srv.sMu.RUnlock()
+	CollectArticles(srv.repo, srv.sources)
+}
+
+func (srv *newsService) AddSource(s NewsSource) {
+	srv.sMu.Lock()
+	defer srv.sMu.Unlock()
+	srv.sources = append(srv.sources, s)
+}
+
+func NewsService(repo ArticleRepo, period time.Duration) *newsService {
+	var srv newsService
+	srv.repo = repo
+	srv.sources = make([]NewsSource, 0)
+	srv.stopC = make(chan struct{})
+	go func(srv *newsService) {
+		srv.Collect()
+		t := time.NewTicker(period)
+		select {
+		case <-srv.stopC:
+			t.Stop()
+			return
+		case <-t.C:
+			srv.Collect()
+		}
+	}(&srv)
+	return &srv
+}
+
+func (srv *newsService) Stop() {
+	if srv.stopC != nil {
+		srv.stopC <- struct{}{}
+	}
+	srv.stopC = nil
 }
