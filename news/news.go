@@ -21,3 +21,12 @@ type NewsSource interface {
 	// return all articles from the source
 	FetchAllArticles() ([]Article, error)
 }
+
+func CollectArticles(repo ArticleRepo, sources []NewsSource) {
+	for _, s := range sources {
+		articles, _ := s.FetchAllArticles()
+		for _, a := range articles {
+			repo.StoreArticle(a)
+		}
+	}
+}
