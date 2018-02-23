@@ -63,12 +63,14 @@ func NewsService(repo ArticleRepo, period time.Duration) *newsService {
 	go func(srv *newsService) {
 		srv.Collect()
 		t := time.NewTicker(period)
-		select {
-		case <-srv.stopC:
-			t.Stop()
-			return
-		case <-t.C:
-			srv.Collect()
+		for {
+			select {
+			case <-srv.stopC:
+				t.Stop()
+				return
+			case <-t.C:
+				srv.Collect()
+			}
 		}
 	}(&srv)
 	return &srv
