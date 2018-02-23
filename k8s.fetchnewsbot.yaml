@@ -1,0 +1,25 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: fetchnewsbot
+  labels:
+    app: fetchnewsbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fetchnewsbot
+  template:
+    metadata:
+      labels:
+        app: fetchnewsbot
+    spec:
+      containers:
+      - name: fetchnewsbot
+        image: gorilych/fn
+        env:
+        - name: TGBOTTOKEN
+          valueFrom:
+            secretKeyRef:
+              name: tg-fetchnews-bot
+              key: token

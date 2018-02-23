@@ -42,7 +42,18 @@ $ cd $GOPATH/src/github.com/gorilych/fn/
 $ dep ensure
 $ build main.go
 $ docker build -t <imagetag> .
+```
+
+For pure docker:
+
+```
 $ docker run --rm -i -t -e "TGBOTTOKEN=<your telegram bot token here>" <imagetag>
+```
+
+For kubernetes, create secret _tg-fetchnews-bot_ with key _token_ according to [documentation](https://kubernetes.io/docs/concepts/configuration/secret/#creating-a-secret-manually) and create deployment with (you might want to replace image tag in yaml beforehand)
+
+```
+$ kubectl create -f k8s.fetchnewsbot.yaml
 ```
 
 Next, connect to your telegram bot. Start with /help command.
