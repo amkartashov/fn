@@ -3,14 +3,49 @@ FN
 
 FetchNews - news aggregator.
 
-Program to fetch news from websites or RSS feeds.
+Service to fetch news from websites or RSS feeds.
 
-Пользователь подает на вход адрес новостного сайта или его RSS-ленты и правило парсинга (формат правила — на усмотрение разработчика).
-База данных агрегатора начинает автоматически пополняться новостями с этого сайта.
-У пользователя есть возможность просматривать список новостей из базы и искать их по подстроке в заголовке новости.
-В качестве примера требуется подключить два любых новостных сайта на выбор.
-Результат — исходный код агрегатора, а также рабочие адреса и правила парсинга, которые можно подать ему на вход.
-Язык —Golang. Хранилище — любая реляционная база данных.
+User may specify news sources to monitor.
+
+FetchNews will monitor these sources and save news articles into local database (SQLite).
+
+Later user may ask FetchNews to show collected articles (optionally filtered by title substring)
+
+Software design
+---------------
+
+Application is designed with [Clean Architecture](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html) in mind.
+
+Base things are defined in package _news_.
+
+Article repository is implemented in package _news/articlerepo/sqlite_.
+
+News source is implemented in packages _news/source/http_ and _news/source/rss_.
+
+UI is implemented in package _news/ui/telegram_.
+
+Main() initializes article repository and starts ui. UI receives user commands and creates news source objects if needed.
+
+Build and run
+-------------
+
+(not tested build instructions myself yet)
+
+Provided that:
+
+* you have installed Docker and Go and go dep
+* you have telegram bot and token
+
+```
+$ go get github.com/gorilych/fn/
+$ cd $GOPATH/src/github.com/gorilych/fn/
+$ dep ensure
+$ build main.go
+$ docker build -t <imagetag> .
+$ docker run --rm -i -t -e "TGBOTTOKEN=<your telegram bot token here>" <imagetag>
+```
+
+Next, connect to your telegram bot. Start with /help command.
 
 Known issues
 ------------
