@@ -37,7 +37,7 @@ func CollectArticles(repo ArticleRepo, sources []NewsSource) {
 }
 
 type newsService struct {
-	repo    ArticleRepo
+	Repo    ArticleRepo
 	sources []NewsSource
 	sMu     sync.RWMutex
 	stopC   chan struct{}
@@ -46,7 +46,7 @@ type newsService struct {
 func (srv *newsService) Collect() {
 	srv.sMu.RLock()
 	defer srv.sMu.RUnlock()
-	CollectArticles(srv.repo, srv.sources)
+	CollectArticles(srv.Repo, srv.sources)
 }
 
 func (srv *newsService) AddSource(s NewsSource) {
@@ -57,7 +57,7 @@ func (srv *newsService) AddSource(s NewsSource) {
 
 func NewsService(repo ArticleRepo, period time.Duration) *newsService {
 	var srv newsService
-	srv.repo = repo
+	srv.Repo = repo
 	srv.sources = make([]NewsSource, 0)
 	srv.stopC = make(chan struct{})
 	go func(srv *newsService) {
