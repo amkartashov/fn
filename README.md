@@ -12,5 +12,8 @@ Program to fetch news from websites or RSS feeds.
 Результат — исходный код агрегатора, а также рабочие адреса и правила парсинга, которые можно подать ему на вход.
 Язык —Golang. Хранилище — любая реляционная база данных.
 
+Known issues
+------------
 
+/stop command may be fetched next time bot runs.
 

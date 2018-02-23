@@ -7,12 +7,12 @@ import (
 	// rssSrc "github.com/gorilych/fn/news/source/rss"
 	aRepo "github.com/gorilych/fn/news/articlerepo/sqlite"
 	//"time"
-  "os"
+	"os"
 )
 
 func main() {
 	//var a = news.Article{Title: "Lorem Ipsum", Link: "https:/example.com" }
-  token := os.Getenv("TGBOTTOKEN")
+	token := os.Getenv("TGBOTTOKEN")
 	repo, err := aRepo.NewSqliteArticleRepo("./articles.db")
 	if err != nil {
 		fmt.Println(err)
